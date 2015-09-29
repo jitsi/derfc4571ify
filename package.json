@@ -1,0 +1,30 @@
+{
+  "name": "derfc4571ify",
+  "description": "Reads a pcap file with TCP streams in RFC4571 (RTP framing) format and outputs a pcap file containing the input RFC4571 frames each encapsulated in a UDP packet. Useful for debugging, since wireshark doesn't dissect RFC4571.",
+  "author": {
+    "name": "Boris Grozev",
+    "email": "boris@jitsi.org"
+  },
+  "version": "0.0.1",
+  "stability": "unstable",
+  "repository": {
+    "type": "git",
+    "url": "jitsi/derfc4571ify"
+  },
+  "dependencies": {
+    "pcap": "*",
+    "fs": "*"
+  },
+  "devDependencies": {
+    "precommit-hook": "*",
+    "jshint": "*"
+  },
+  "scripts": {
+    "lint": "./node_modules/.bin/jshint *js",
+    "validate": "npm ls"
+  },
+  "pre-commit": [
+    "lint"
+  ],
+  "license": "Apache-2.0"
+}
