@@ -95,18 +95,19 @@ pcap_session.on('packet', function (raw_packet) {
         udpHeader.writeUInt16BE(0, 6); //no checksum
 
         ipHeader = new Buffer(ipHeaderTemplate);
-        // handle ipv6 the laziest possible way:w
-        saddr = (ip.version == 4) ? ip.saddr : {o1: 127, o2: 0, o3: 0, o4: 1};
-        daddr = (ip.version == 4) ? ip.daddr : saddr;
-        ipHeader.writeUInt8(saddr.o1, 12);
-        ipHeader.writeUInt8(saddr.o2, 13);
-        ipHeader.writeUInt8(saddr.o3, 14);
-        ipHeader.writeUInt8(saddr.o4, 15);
+        // handle ipv6 the laziest possible way
+        saddr = (ip.version == 4) ? ip.saddr.addr : [127, 0, 0, 1];
+        daddr = (ip.version == 4) ? ip.daddr.addr : saddr;
 
-        ipHeader.writeUInt8(daddr.o1, 16);
-        ipHeader.writeUInt8(daddr.o2, 17);
-        ipHeader.writeUInt8(daddr.o3, 18);
-        ipHeader.writeUInt8(daddr.o4, 19);
+        ipHeader.writeUInt8(saddr[0], 12);
+        ipHeader.writeUInt8(saddr[1], 13);
+        ipHeader.writeUInt8(saddr[2], 14);
+        ipHeader.writeUInt8(saddr[3], 15);
+
+        ipHeader.writeUInt8(daddr[0], 16);
+        ipHeader.writeUInt8(daddr[1], 17);
+        ipHeader.writeUInt8(daddr[2], 18);
+        ipHeader.writeUInt8(daddr[3], 19);
 
         ipHeader.writeUInt16BE(
             udpHeader.length + ipHeader.length + payload.length,
