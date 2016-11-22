@@ -58,16 +58,24 @@ if (process.argv.length < 4) {
 }
 
 outFilename = process.argv[3];
-fs.writeFileSync(outFilename, globalPcapHeader, 0, globalPcapHeader.length);
+fs.writeFileSync(outFilename, globalPcapHeader);
 pcap_session = pcap.createOfflineSession(
     process.argv[2],
     process.argv.length >= 5 ? process.argv[4] : "tcp");
 
+var packetsRead = 0;
+var packetsWritten = 0;
+
+pcap_session.on("complete", function () {
+    console.log("Read " + packetsRead + " packets, wrote " + packetsWritten);
+});
+
 pcap_session.on('packet', function (raw_packet) {
     var ip, packet, pcapHeader, ipHeader, udpHeader, payload, frameLength,
         saddr, daddr;
+    packetsRead++;
     function append(buf) {
-        fs.appendFileSync(outFilename, buf, 0, buf.length);
+        fs.appendFileSync(outFilename, buf);
     }
 
     packet = pcap.decode(raw_packet);
@@ -75,7 +83,8 @@ pcap_session.on('packet', function (raw_packet) {
     if (!packet.payload.payload) 
         return;
 
-    if (ip.protocol == 6 && ip.payload.data_bytes > 2) { //6=TCP
+    if (ip.protocol == 6 && ip.payload.dataLength > 2) { //6=TCP
+
         //take the payload without the first two bytes (rfc4571 framing)
         payload = ip.payload.data.slice(2); 
         
@@ -119,5 +128,7 @@ pcap_session.on('packet', function (raw_packet) {
         append(ipHeader);
         append(udpHeader);
         append(payload);
+
+        packetsWritten++;
     }
 });

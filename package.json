@@ -12,8 +12,8 @@
     "url": "jitsi/derfc4571ify"
   },
   "dependencies": {
-    "pcap": "*",
-    "fs": "*"
+    "pcap": "git://github.com/mranney/node_pcap.git#d920204745c8b00ef4b7a3fe27d902b263cdb70f",
+    "fs": "0.0.2"
   },
   "devDependencies": {
     "precommit-hook": "*",
